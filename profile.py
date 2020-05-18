@@ -16,7 +16,6 @@ The following nodes will be deployed:
 
 * Intel NUC5300/B210 w/ srsLTE (`rue1`)
 * Intel NUC5300/B210 w/ srsLTE (`enb1`)
-* D430 compute node w/ srsLTE (`epc`)
 
 """
 
@@ -55,16 +54,9 @@ rflink = request.RFLink("rflink")
 rflink.addInterface(enb1_rue1_rf)
 rflink.addInterface(rue1_enb1_rf)
 
-# Add OAI EPC (HSS, MME, SPGW) node.
-epc = request.RawPC("epc")
-epc.hardware_type = "d430"
-epc.disk_image = GLOBALS.UBUNTU_1804_IMG
-epc.addService(rspec.Execute(shell="bash", command="/local/repository/setup-epc-network.sh"))
-
 link = request.Link("lan")
 link.addNode(rue1)
 link.addNode(enb1)
-link.addNode(epc)
 link.link_multiplexing = True
 link.vlan_tagging = True
 link.best_effort = True
