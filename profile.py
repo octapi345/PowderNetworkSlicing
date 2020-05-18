@@ -30,9 +30,6 @@ class GLOBALS(object):
 
 
 pc = portal.Context()
-pc.bindParameters()
-pc.verifyParameters()
-
 request = pc.makeRequestRSpec()
 
 # Add a NUC eNB node
