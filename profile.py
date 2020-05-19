@@ -10,7 +10,7 @@ tourDescription = """
 # srsLTE Controlled RF
 
 Use this profile to intantiate and end-to-end LTE network in a controlled RF
-environment (SDRs with wired connections) using the lates srsLTE release.
+environment (SDRs with wired connections) using srsLTE release 20.04.1.
 
 The following nodes will be deployed:
 
