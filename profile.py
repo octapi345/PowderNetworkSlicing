@@ -42,10 +42,10 @@ with `tmux attach`.
 If you'd like to start `srsepc` and `srsenb` manually, here are the commands:
 
 ```
-# start `srsepc`
+# start srsepc
 sudo srsepc /etc/srslte/epc.conf
 
-# start `srsenb`
+# start srsenb
 sudo srsenb /etc/srslte/enb.conf
 ```
 
