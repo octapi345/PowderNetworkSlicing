@@ -83,6 +83,7 @@ enb1.disk_image = GLOBALS.SRSLTE_IMG
 enb1.Desire("rf-controlled", 1)
 enb1_rue1_rf = enb1.addInterface("rue1_rf")
 enb1.addService(rspec.Execute(shell="bash", command="/local/repository/tune-cpu.sh"))
+enb1.addService(rspec.Execute(shell="bash", command="/local/repository/add-nat-and-ip-forwarding.sh"))
 
 # Add a NUC UE node
 rue1 = request.RawPC("rue1")
