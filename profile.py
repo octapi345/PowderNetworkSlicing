@@ -20,6 +20,50 @@ The following nodes will be deployed:
 """
 
 tourInstructions = """
+
+After your experiment becomes ready, login to the `enb1` via `ssh` and do the
+following:
+
+```
+cd /local/repository
+./start.sh
+```
+
+This will start a `tmux` session with three panes, running `srsepc` and
+`srsenb`, and then leaving your cursor in the last pane. After you've associated
+a UE with this eNB, you can use the third pane to run tests with `ping` or
+`iperf`. If you are not familiar with `tmux`, it's a terminal multiplexer that
+has some similarities to screen. Here's a [tmux cheat
+sheet](https://tmuxcheatsheet.com), but `ctrl-b o` (move to other pane) and
+`ctrl-b x` (kill pane), should get you pretty far. `ctrl-b d` will detach you
+from the `tmux` session and leave it running in the background. You can reattach
+with `tmux attach`.
+
+If you'd like to start `srsepc` and `srsenb` manually, here are the commands:
+
+```
+# start `srsepc`
+sudo srsepc /etc/srslte/epc.conf
+
+# start `srsenb`
+sudo srsenb /etc/srslte/enb.conf
+```
+
+After `srsepc` and `srsenb` have started, login to `rue1` and do:
+
+```
+cd /local/repository
+./start.sh
+```
+
+This will start a `tmux` session with two panes: one running srsue and the other
+holding a spare terminal for running tests with `ping` and `iperf`. Again, if
+you'd like to run `srsue` manually, do:
+
+```
+sudo srsue /etc/srslte/ue.conf
+```
+
 """
 
 
