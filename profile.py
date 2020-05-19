@@ -38,6 +38,7 @@ enb1.hardware_type = GLOBALS.NUC_HWTYPE
 enb1.disk_image = GLOBALS.SRSLTE_IMG
 enb1.Desire("rf-controlled", 1)
 enb1_rue1_rf = enb1.addInterface("rue1_rf")
+enb1.addService(rspec.Execute(shell="bash", command="/local/repository/tune-cpu.sh"))
 
 # Add a NUC UE node
 rue1 = request.RawPC("rue1")
@@ -45,6 +46,7 @@ rue1.hardware_type = GLOBALS.NUC_HWTYPE
 rue1.disk_image = GLOBALS.SRSLTE_IMG
 rue1.Desire("rf-controlled", 1)
 rue1_enb1_rf = rue1.addInterface("enb1_rf")
+rue1.addService(rspec.Execute(shell="bash", command="/local/repository/tune-cpu.sh"))
 
 # Create the RF link between the UE and eNodeB
 rflink = request.RFLink("rflink")
