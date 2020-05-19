@@ -97,13 +97,6 @@ rflink = request.RFLink("rflink")
 rflink.addInterface(enb1_rue1_rf)
 rflink.addInterface(rue1_enb1_rf)
 
-link = request.Link("lan")
-link.addNode(rue1)
-link.addNode(enb1)
-link.link_multiplexing = True
-link.vlan_tagging = True
-link.best_effort = True
-
 tour = IG.Tour()
 tour.Description(IG.Tour.MARKDOWN, tourDescription)
 tour.Instructions(IG.Tour.MARKDOWN, tourInstructions)
