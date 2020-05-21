@@ -9,7 +9,7 @@ tourDescription = """
 
 # srsLTE Controlled RF
 
-Use this profile to intantiate and end-to-end LTE network in a controlled RF
+Use this profile to intantiate an end-to-end LTE network in a controlled RF
 environment (SDRs with wired connections) using srsLTE release 20.04.1.
 
 The following nodes will be deployed:
@@ -21,7 +21,7 @@ The following nodes will be deployed:
 
 tourInstructions = """
 
-After your experiment becomes ready, login to the `enb1` via `ssh` and do the
+After your experiment becomes ready, login to `enb1` via `ssh` and do the
 following:
 
 ```
