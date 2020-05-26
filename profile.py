@@ -3,6 +3,7 @@ import geni.portal as portal
 import geni.rspec.pg as rspec
 import geni.rspec.igext as IG
 import geni.rspec.emulab.pnext as PN
+import geni.urn as URN
 
 
 tourDescription = """
@@ -68,12 +69,21 @@ sudo srsue /etc/srslte/ue.conf
 
 
 class GLOBALS(object):
+    NUC_HWTYPE = "nuc5300"
+    COTS_UE_HWTYPE = "nexus5"
     UBUNTU_1804_IMG = "urn:publicid:IDN+emulab.net+image+emulab-ops//UBUNTU18-64-STD"
     SRSLTE_IMG = "urn:publicid:IDN+emulab.net+image+PowderProfiles:U18LL-SRSLTE:1"
-    NUC_HWTYPE = "nuc5300"
+    COTS_UE_IMG = URN.Image(PN.PNDEFS.PNET_AM, "PhantomNet:ANDROID444-STD")
+    ADB_IMG = URN.Image(PN.PNDEFS.PNET_AM, "PhantomNet:UBUNTU14-64-PNTOOLS")
 
 
 pc = portal.Context()
+pc.defineParameter("ue_type", "UE Type", portal.ParameterType.STRING, "nexus5",
+                   [("srsue", "SRS UE (SDR)"), ("nexus5", "COTS UE (Nexus 5)")],
+                   longDescription="Type of UE to deploy.")
+
+params = pc.bindParameters()
+pc.verifyParameters()
 request = pc.makeRequestRSpec()
 
 # Add a NUC eNB node
@@ -85,13 +95,23 @@ enb1_rue1_rf = enb1.addInterface("rue1_rf")
 enb1.addService(rspec.Execute(shell="bash", command="/local/repository/tune-cpu.sh"))
 enb1.addService(rspec.Execute(shell="bash", command="/local/repository/add-nat-and-ip-forwarding.sh"))
 
-# Add a NUC UE node
-rue1 = request.RawPC("rue1")
-rue1.hardware_type = GLOBALS.NUC_HWTYPE
-rue1.disk_image = GLOBALS.SRSLTE_IMG
+# Add a UE node
+if params.ue_type == "nexus5":
+    adbnode = request.RawPC("adbnode")
+    adbnode.disk_image = GLOBALS.ADB_IMG
+    rue1 = request.UE("rue1")
+    rue1.hardware_type = GLOBALS.COTS_UE_HWTYPE
+    rue1.disk_image = GLOBALS.COTS_UE_IMG
+    rue1.adb_target = "adbnode"
+elif params.ue_type == "srsue":
+    rue1 = request.RawPC("rue1")
+    rue1.hardware_type = GLOBALS.NUC_HWTYPE
+    rue1.disk_image = GLOBALS.SRSLTE_IMG
+    rue1_enb1_rf = rue1.addInterface("enb1_rf")
+    rue1.addService(rspec.Execute(shell="bash", command="/local/repository/tune-cpu.sh"))
+
 rue1.Desire("rf-controlled", 1)
 rue1_enb1_rf = rue1.addInterface("enb1_rf")
-rue1.addService(rspec.Execute(shell="bash", command="/local/repository/tune-cpu.sh"))
 
 # Create the RF link between the UE and eNodeB
 rflink = request.RFLink("rflink")
