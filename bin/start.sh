@@ -1,13 +1,13 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 # Run appropriate setup script
 
 NODE_ID=$(geni-get client_id)
 
 if [ $NODE_ID = "rue1" ]; then
-    /local/repository/start-ue.sh
+    /local/repository/bin/start-ue.sh
 elif [ $NODE_ID = "enb1" ]; then
-    /local/repository/start-enb.sh
+    /local/repository/bin/start-enb.sh
 else
     echo "no setup necessary"
 fi
