@@ -34,8 +34,7 @@ tourInstructions = """
 After your experiment becomes ready, login to `enb1` via `ssh` and do:
 
 ```
-cd /local/repository
-./bin/start.sh
+/local/repository/bin/start.sh
 ```
 
 This will start a `tmux` session with three panes, running `srsepc` and
@@ -78,13 +77,16 @@ connection, e.g.,
 ping 172.16.0.1
 ```
 
+If the Nexus 5 fails to sync with the eNB, try rebooting it via the `adb` shell.
+After reboot, you'll have to repeat the `pnadb -a` and `adb shell` commands on
+`adbnode` to reestablish a connection to the Nexus 5.
+
 ### srsLTE UE
 
 If you've deployed an srsLTE UE, login to `rue1` and do:
 
 ```
-cd /local/repository
-./bin/start.sh
+/local/repository/bin/start.sh
 ```
 
 This will start a `tmux` session with two panes: one running srsue and the other
