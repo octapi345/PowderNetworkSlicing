@@ -114,12 +114,21 @@ pc.defineParameter("ue_type", "UE Type", portal.ParameterType.STRING, "nexus5",
                    [("srsue", "srsLTE UE (B210)"), ("nexus5", "COTS UE (Nexus 5)")],
                    longDescription="Type of UE to deploy.")
 
+pc.defineParameter("enb_node", "eNodeB Node ID",
+                   portal.ParameterType.STRING, "", advanced=True,
+                   longDescription="Specific eNodeB node to bind to.")
+
+pc.defineParameter("ue_node", "UE Node ID",
+                   portal.ParameterType.STRING, "", advanced=True,
+                   longDescription="Specific UE node to bind to.")
+
 params = pc.bindParameters()
 pc.verifyParameters()
 request = pc.makeRequestRSpec()
 
 # Add a NUC eNB node
 enb1 = request.RawPC("enb1")
+enb1.component_id = params.enb_node
 enb1.hardware_type = GLOBALS.NUC_HWTYPE
 enb1.disk_image = GLOBALS.SRSLTE_IMG
 enb1.Desire("rf-controlled", 1)
@@ -143,6 +152,7 @@ elif params.ue_type == "srsue":
     rue1.addService(rspec.Execute(shell="bash", command="/local/repository/bin/update-config-files.sh"))
     rue1.addService(rspec.Execute(shell="bash", command="/local/repository/tune-cpu.sh"))
 
+rue1.component_id = params.ue_node
 rue1.Desire("rf-controlled", 1)
 rue1_enb1_rf = rue1.addInterface("enb1_rf")
 
