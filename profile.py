@@ -8,7 +8,7 @@ import geni.urn as URN
 
 tourDescription = """
 
-# srsLTE Controlled RF
+# srsLTE Controlled RF with shared vlan support (primarily for ORAN)
 
 Use this profile to intantiate an end-to-end LTE network in a controlled RF
 environment (wired connections between UE and eNB). The UE can be srsLTE-based
@@ -110,7 +110,7 @@ class GLOBALS(object):
 
 
 pc = portal.Context()
-pc.defineParameter("ue_type", "UE Type", portal.ParameterType.STRING, "nexus5",
+pc.defineParameter("ue_type", "UE Type", portal.ParameterType.STRING, "srsue",
                    [("srsue", "srsLTE UE (B210)"), ("nexus5", "COTS UE (Nexus 5)")],
                    longDescription="Type of UE to deploy.")
 
@@ -121,8 +121,36 @@ pc.defineParameter("enb_node", "eNodeB Node ID",
 pc.defineParameter("ue_node", "UE Node ID",
                    portal.ParameterType.STRING, "", advanced=True,
                    longDescription="Specific UE node to bind to.")
+pc.defineParameter(
+    "multiplexLans", "Multiplex Networks",
+    portal.ParameterType.BOOLEAN,False,
+    longDescription="Multiplex any networks over physical interfaces using VLANs.  Some physical machines have only a single experiment network interface, so if you want multiple links/LANs, you have to enable multiplexing.  Currently, if you select this option.",
+    advanced=True)
+pc.defineParameter(
+    "connectSharedVlan","Shared VLAN Name",
+    portal.ParameterType.STRING,"",
+    longDescription="Connect `enb1` to a shared VLAN.  This allows your srsLTE experiment to connect to another experiment (e.g., one running ORAN services). The shared VLAN must already exist.",
+    advanced=True)
+pc.defineParameter(
+    "sharedVlanAddress","Shared VLAN IP Address",
+    portal.ParameterType.STRING,"10.254.254.100/255.255.255.0",
+    longDescription="Set the IP address and subnet mask for the shared VLAN interface.  Make sure you choose an unused address within the subnet of an existing shared vlan!  Also ensure that you specify the subnet mask as a dotted quad.",
+    advanced=True)
 
 params = pc.bindParameters()
+
+# Handle shared vlan address param.
+(sharedVlanAddress,sharedVlanNetmask) = (None,None)
+if params.sharedVlanAddress:
+    aa = params.sharedVlanAddress.split('/')
+    if len(aa) != 2:
+        perr = portal.ParameterError(
+            "Invalid shared VLAN address!",
+            ['sharedVlanAddress'])
+        pc.reportError(perr)
+    else:
+        (sharedVlanAddress,sharedVlanNetmask) = (aa[0],aa[1])
+
 pc.verifyParameters()
 request = pc.makeRequestRSpec()
 
@@ -136,6 +164,20 @@ enb1_rue1_rf = enb1.addInterface("rue1_rf")
 enb1.addService(rspec.Execute(shell="bash", command="/local/repository/bin/update-config-files.sh"))
 enb1.addService(rspec.Execute(shell="bash", command="/local/repository/bin/tune-cpu.sh"))
 enb1.addService(rspec.Execute(shell="bash", command="/local/repository/bin/add-nat-and-ip-forwarding.sh"))
+
+# Connect enb1 to shared vlan, if requested.
+if params.connectSharedVlan:
+    shiface = enb1.addInterface("ifSharedVlan")
+    if sharedVlanAddress:
+        shiface.addAddress(
+            rspec.IPv4Address(sharedVlanAddress,sharedVlanNetmask))
+    sharedvlan = request.Link('shared-vlan')
+    sharedvlan.addInterface(shiface)
+    sharedvlan.connectSharedVlan(params.connectSharedVlan)
+    if params.multiplexLans:
+        sharedvlan.link_multiplexing = True
+        sharedvlan.best_effort = True
+    request.addResource(sharedvlan)
 
 # Add a UE node
 if params.ue_type == "nexus5":
