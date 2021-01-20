@@ -163,7 +163,7 @@ enb1.Desire("rf-controlled", 1)
 enb1_rue1_rf = enb1.addInterface("rue1_rf")
 enb1.addService(rspec.Execute(shell="bash", command="/local/repository/bin/update-config-files.sh"))
 enb1.addService(rspec.Execute(shell="bash", command="/local/repository/bin/tune-cpu.sh"))
-enb1.addService(rspec.Execute(shell="bash", command="/local/repository/bin/add-nat-and-ip-forwarding.sh"))
+enb1.addService(rspec.Execute(shell="bash", command="/local/repository/bin/setup-ip-config.sh"))
 
 # Connect enb1 to shared vlan, if requested.
 if params.connectSharedVlan:
