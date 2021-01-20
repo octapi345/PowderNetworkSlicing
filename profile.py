@@ -177,7 +177,6 @@ if params.connectSharedVlan:
     if params.multiplexLans:
         sharedvlan.link_multiplexing = True
         sharedvlan.best_effort = True
-    request.addResource(sharedvlan)
 
 # Add a UE node
 if params.ue_type == "nexus5":
