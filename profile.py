@@ -178,6 +178,7 @@ pc.defineParameter(
     portal.ParameterType.STRING,"10.254.254.100/255.255.255.0",
     longDescription="Set the IP address and subnet mask for the shared VLAN interface.  Make sure you choose an unused address within the subnet of an existing shared vlan!  Also ensure that you specify the subnet mask as a dotted quad.",
     advanced=True)
+pc.defineParameter(
     "oranAddress","ORAN Services Gateway Address",
     portal.ParameterType.STRING,"10.254.254.1",
     longDescription="The IP address of the ORAN services gateway running on an adjacent experiment connected to the same shared VLAN.",
