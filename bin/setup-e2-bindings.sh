@@ -2,7 +2,13 @@
 
 set -x
 
-export OURDIR=/var/tmp/oran
+SETUPDIR=`dirname $0`
+
+. $SETUPDIR/setup-common.sh
+
+if [ ! -d $OURDIR ]; then
+    mkdir -p $OURDIR
+fi
 
 if [ -f $OURDIR/setup-e2-bindings-done ]; then
     echo "setup-e2-bindings already ran; not running again"

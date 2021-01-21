@@ -2,8 +2,13 @@
 
 set -x
 
-export OURDIR=/var/tmp/oran
-export SUDO=/usr/bin/sudo
+SETUPDIR=`dirname $0`
+
+. $SETUPDIR/setup-common.sh
+
+if [ ! -d $OURDIR ]; then
+    mkdir -p $OURDIR
+fi
 
 if [ -f $OURDIR/setup-asn1c-done ]; then
     echo "setup-asn1c already ran; not running again"

@@ -2,9 +2,13 @@
 
 set -x
 
-export SRC=/var/tmp/oran
-export OURDIR=/var/tmp/oran
-export SUDO=/usr/bin/sudo
+SETUPDIR=`dirname $0`
+
+. $SETUPDIR/setup-common.sh
+
+if [ ! -d $OURDIR ]; then
+    mkdir -p $OURDIR
+fi
 
 if [ -f $OURDIR/setup-srslte-done ]; then
     echo "setup-srslte already ran; not running again"
@@ -13,9 +17,9 @@ fi
 
 cd $OURDIR
 
-$SRC/setup-e2-bindings.sh
+$SETUPDIR/setup-e2-bindings.sh
 
-$SRC/setup-asn1c.sh
+$SETUPDIR/setup-asn1c.sh
 
 #logtstart "srslte"
 
@@ -24,7 +28,7 @@ $SRC/setup-asn1c.sh
 #
 cd $OURDIR
 
-apt-get -q -y \
+$SUDO apt-get -q -y \
     cmake libfftw3-dev libmbedtls-dev libboost-program-options-dev \
     libconfig++-dev libsctp-dev libzmq3-dev
 
