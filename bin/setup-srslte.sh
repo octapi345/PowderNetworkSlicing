@@ -49,6 +49,7 @@ else
     make
 fi
 $SUDO make install
+$SUDO ldconfig
 $SUDO ./srslte_install_configs.sh service
 
 #logtend "srslte"

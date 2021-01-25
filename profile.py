@@ -43,28 +43,27 @@ tourInstructions = """
 
 ### Prerequisites: ORAN Setup
 
-You should have already started up an O-RAN experiment connected to the
-same shared VLAN you specified during the "parameterize" step.  Make
-sure it is up and fully deployed first - see the instructions included
-in that profile.  However, DO NOT start the srsLTE components as
-directed in those instructions.  DO start the `kpimon` and `nexran`
-xApps as instructed, but first you must make a small change to the
-`kpimon` configuration file.
+You should have already started up an O-RAN experiment connected to
+the same shared VLAN you specified during the "parameterize" step.
+Make sure it is up and fully deployed first - see the instructions
+included in that profile.  However, DO NOT start the srsLTE components
+or `kpimon` xApp as directed in those instructions.
 
-Edit `/local/profile-public/scp-kpimon-config-file.json` to change the
+First, log in to `node-0` in your O-RAN experiment and edit
+`/local/profile-public/scp-kpimon-config-file.json` to change the
 eNodeB identifier.  Find the line that shows:
 
 ```
-ranList=enB_macro_661_8112_0019b0
+"ranList":"enB_macro_661_8112_0019b0"
 ```
 
 And change it to:
 
 ```
-ranList=enB_macro_XXX_YYYY_0019b0
+"ranList":"enB_macro_14156_321_0019b0"
 ```
 
-Save the changes.
+Don't forget to save the changes.
 
 Next, make note of the `e2term-sctp` service's IP address in the ORAN
 experiment.  To do that, open an SSH session to `node-0` in that
@@ -96,48 +95,30 @@ in the previous step.
 sudo srsenb --ric.agent.remote_ipv4_addr=${E2TERM_IP} --log.all_level=warn --ric.agent.log_level=debug --log.filename=stdout
 ```
 
-You should see `srsenb` send periodic `kpimon` reports.  These will
-appear in the `kpimon` xApp log output as well in your ORAN experiment.
+There will be output in srsenb and the O-RAN e2term mgmt and other
+service logs showing that the enb has connected to the O-RAN RIC.
 
-### Nexus 5
+### Start the `kpimon` xApp
 
-If you've deployed a Nexus 5, you should see it sync with the eNB eventually and
-obtain an IP address. Login to `adbnode` in order to access `rue1` via `adb`:
+Go back to the instructions in the O-RAN profile and follow the steps
+for starting the `kpimon` xApp (start with step 3 under "Running the
+O-RAN/srsLTE scp-kpimon demo").
 
-```
-# on `adbnode`
-pnadb -a
-adb shell
-```
+You should start seeing `srsenb` send periodic reports once the
+`kpimon` xApp starts.  These will appear in the `kpimon` xApp log
+output as well in the srsenb output.
 
-Once you have an `adb` shell to `rue1`, you can use `ping` to test the
-connection, e.g.,
+### Start the srsLTE UE
 
-```
-# in adb shell connected to rue1
-# ping SGi IP
-ping 172.16.0.1
-```
-
-If the Nexus 5 fails to sync with the eNB, try rebooting it via the `adb` shell.
-After reboot, you'll have to repeat the `pnadb -a` and `adb shell` commands on
-`adbnode` to reestablish a connection to the Nexus 5.
-
-### srsLTE UE
-
-If you've deployed an srsLTE UE, login to `rue1` and do:
+SSH to `rue1` and run:
 
 ```
-/local/repository/bin/start.sh
+sudo srsue
 ```
 
-This will start a `tmux` session with two panes: one running srsue and the other
-holding a spare terminal for running tests with `ping` and `iperf`. Again, if
-you'd like to run `srsue` manually, do:
-
-```
-sudo srsue /etc/srslte/ue.conf
-```
+You should see changes in the `kpimon` output when `srsue` is
+connected.  Try pinging `172.16.0.1` (the srs SPGW gateway address)
+from the UE and watch the `kpimon` counters tick.
 
 """
 
