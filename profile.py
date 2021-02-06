@@ -200,7 +200,7 @@ for i in range(params.num_ues):
     ue.addService(rspec.Execute(shell="bash", command="/local/repository/tune-cpu.sh"))
     ue.Desire("rf-controlled", 1)
     # Create the RF link between the UE and eNodeB
-    rflink = request.RFLink("rflink%d", i)
+    rflink = request.RFLink("rflink%d" % i)
     ue_enb1_rf = ue.addInterface("enb1_rf")
     enb1_ue_rf = enb1.addInterface("rue%d_rf" % i)
     rflink.addInterface(enb1_ue_rf)
