@@ -192,7 +192,7 @@ if params.connectSharedVlan:
         sharedvlan.best_effort = True
 
 # Add a srsLTE SDR-based UE nodes
-for i in range(params.num_ues):
+for i in range(1,params.num_ues+1):
     ue = request.RawPC("rue%d" % i)
     ue.hardware_type = GLOBALS.NUC_HWTYPE
     ue.disk_image = GLOBALS.SRSLTE_IMG
