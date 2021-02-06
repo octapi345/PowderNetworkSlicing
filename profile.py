@@ -22,20 +22,14 @@ directed.  See the instructions in this profile for more information.
 
 ---
 
-Use this profile to intantiate an end-to-end LTE network in a controlled RF
-environment (wired connections between UE and eNB). The UE can be srsLTE-based
-or a Nexus 5.
+Use this profile to instantiate an end-to-end srsLTE network in a controlled RF
+environment (wired connections between UE and eNB).
 
-If you elect to use a Nexus 5, these nodes will be deployed:
+The following resources will be allocated:
 
-* Nexus 5 (`rue1`)
-* Generic Compute Node w/ ADB image (`adbnode`)
-* Intel NUC5300/B210 w/ srsLTE eNB/EPC (`enb1`)
-
-If instead you choose to use an srsLTE UE, these will be deployed:
-
-* Intel NUC5300/B210 w/ srsLTE (`rue1`) or
-* Intel NUC5300/B210 w/ srsLTE eNB/EPC (`enb1`)
+  * Intel NUC5300/B210 w/ srsLTE UE(s) 
+    * 1 or 2, depending on "Number of UEs" parameter: `rue1`, `rue2`
+  * Intel NUC5300/B210 w/ srsLTE eNB/EPC (`enb1`)
 
 """
 
@@ -125,25 +119,16 @@ from the UE and watch the `kpimon` counters tick.
 
 class GLOBALS(object):
     NUC_HWTYPE = "nuc5300"
-    COTS_UE_HWTYPE = "nexus5"
     UBUNTU_1804_IMG = "urn:publicid:IDN+emulab.net+image+emulab-ops//UBUNTU18-64-STD"
     SRSLTE_IMG = "urn:publicid:IDN+emulab.net+image+PowderProfiles:U18LL-SRSLTE:1"
-    COTS_UE_IMG = URN.Image(PN.PNDEFS.PNET_AM, "PhantomNet:ANDROID444-STD")
-    ADB_IMG = URN.Image(PN.PNDEFS.PNET_AM, "PhantomNet:UBUNTU14-64-PNTOOLS")
-
 
 pc = portal.Context()
-pc.defineParameter("ue_type", "UE Type", portal.ParameterType.STRING, "srsue",
-                   [("srsue", "srsLTE UE (B210)"), ("nexus5", "COTS UE (Nexus 5)")],
-                   longDescription="Type of UE to deploy.")
-
+pc.defineParameter("num_ues", "Number of NUC+B210 srsLTE UEs to allocate",
+                   portal.ParameterType.INTEGER, 1, [1,2])
 pc.defineParameter("enb_node", "eNodeB Node ID",
                    portal.ParameterType.STRING, "", advanced=True,
                    longDescription="Specific eNodeB node to bind to.")
 
-pc.defineParameter("ue_node", "UE Node ID",
-                   portal.ParameterType.STRING, "", advanced=True,
-                   longDescription="Specific UE node to bind to.")
 pc.defineParameter(
     "multiplexLans", "Multiplex Networks",
     portal.ParameterType.BOOLEAN,True,
@@ -188,7 +173,6 @@ enb1.component_id = params.enb_node
 enb1.hardware_type = GLOBALS.NUC_HWTYPE
 enb1.disk_image = GLOBALS.SRSLTE_IMG
 enb1.Desire("rf-controlled", 1)
-enb1_rue1_rf = enb1.addInterface("rue1_rf")
 enb1.addService(rspec.Execute(shell="bash", command="/local/repository/bin/tune-cpu.sh"))
 enb1.addService(rspec.Execute(shell="bash", command="/local/repository/bin/setup-ip-config.sh %s" % params.oranAddress))
 enb1.addService(rspec.Execute(shell="bash", command="/local/repository/bin/update-config-files.sh"))
@@ -207,29 +191,20 @@ if params.connectSharedVlan:
         sharedvlan.link_multiplexing = True
         sharedvlan.best_effort = True
 
-# Add a UE node
-if params.ue_type == "nexus5":
-    adbnode = request.RawPC("adbnode")
-    adbnode.disk_image = GLOBALS.ADB_IMG
-    rue1 = request.UE("rue1")
-    rue1.hardware_type = GLOBALS.COTS_UE_HWTYPE
-    rue1.disk_image = GLOBALS.COTS_UE_IMG
-    rue1.adb_target = "adbnode"
-elif params.ue_type == "srsue":
-    rue1 = request.RawPC("rue1")
-    rue1.hardware_type = GLOBALS.NUC_HWTYPE
-    rue1.disk_image = GLOBALS.SRSLTE_IMG
-    rue1.addService(rspec.Execute(shell="bash", command="/local/repository/bin/update-config-files.sh"))
-    rue1.addService(rspec.Execute(shell="bash", command="/local/repository/tune-cpu.sh"))
-
-rue1.component_id = params.ue_node
-rue1.Desire("rf-controlled", 1)
-rue1_enb1_rf = rue1.addInterface("enb1_rf")
-
-# Create the RF link between the UE and eNodeB
-rflink = request.RFLink("rflink")
-rflink.addInterface(enb1_rue1_rf)
-rflink.addInterface(rue1_enb1_rf)
+# Add a srsLTE SDR-based UE nodes
+for i in range(params.num_ues):
+    ue = request.RawPC("rue%d" % i)
+    ue.hardware_type = GLOBALS.NUC_HWTYPE
+    ue.disk_image = GLOBALS.SRSLTE_IMG
+    ue.addService(rspec.Execute(shell="bash", command="/local/repository/bin/update-config-files.sh"))
+    ue.addService(rspec.Execute(shell="bash", command="/local/repository/tune-cpu.sh"))
+    ue.Desire("rf-controlled", 1)
+    # Create the RF link between the UE and eNodeB
+    rflink = request.RFLink("rflink%d", i)
+    ue_enb1_rf = ue.addInterface("enb1_rf")
+    enb1_ue_rf = enb1.addInterface("rue%d_rf" % i)
+    rflink.addInterface(enb1_ue_rf)
+    rflink.addInterface(ue_enb1_rf)
 
 tour = IG.Tour()
 tour.Description(IG.Tour.MARKDOWN, tourDescription)
