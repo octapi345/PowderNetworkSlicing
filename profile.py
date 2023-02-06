@@ -125,9 +125,10 @@ class GLOBALS(object):
 pc = portal.Context()
 pc.defineParameter("num_ues", "Number of NUC+B210 srsLTE UEs to allocate",
                    portal.ParameterType.INTEGER, 3, [1,5])
-pc.defineParameter("enb_node", "eNodeB Node ID",
-                   portal.ParameterType.STRING, "", advanced=True,
-                   longDescription="Specific eNodeB node to bind to.")
+# pc.defineParameter("enb_node", "eNodeB Node ID",
+#                   portal.ParameterType.STRING, "", advanced=True,
+#                   longDescription="Specific eNodeB node to bind to.")
+    
 
 pc.defineParameter(
     "multiplexLans", "Multiplex Networks",
@@ -169,7 +170,7 @@ request = pc.makeRequestRSpec()
 
 # Add a NUC eNB node
 enb1 = request.RawPC("enb1")
-enb1.component_id = params.enb_node
+# needed? enb1.component_id = params.enb_node
 enb1.hardware_type = GLOBALS.NUC_HWTYPE
 enb1.disk_image = GLOBALS.SRSLTE_IMG
 enb1.Desire("rf-controlled", 1)
@@ -178,7 +179,7 @@ enb1.addService(rspec.Execute(shell="bash", command="/local/repository/bin/setup
 enb1.addService(rspec.Execute(shell="bash", command="/local/repository/bin/update-config-files.sh"))
 enb1.addService(rspec.Execute(shell="bash", command="/local/repository/bin/setup-srslte.sh"))
 enb2 = request.RawPC("enb2")
-enb2.component_id = params.enb_node
+# needed? enb2.component_id = params.enb_node
 enb2.hardware_type = GLOBALS.NUC_HWTYPE
 enb2.disk_image = GLOBALS.SRSLTE_IMG
 enb2.Desire("rf-controlled", 1)
