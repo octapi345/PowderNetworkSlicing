@@ -124,7 +124,7 @@ class GLOBALS(object):
 
 pc = portal.Context()
 pc.defineParameter("num_ues", "Number of NUC+B210 srsLTE UEs to allocate",
-                   portal.ParameterType.INTEGER, 3, [1,5])
+                   portal.ParameterType.INTEGER, 1, [1,5])
 pc.defineParameter("enb_node", "eNodeB Node ID",
                    portal.ParameterType.STRING, "", advanced=True,
                    longDescription="Specific eNodeB node to bind to.")
