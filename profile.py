@@ -124,7 +124,7 @@ class GLOBALS(object):
 
 pc = portal.Context()
 pc.defineParameter("num_ues", "Number of NUC+B210 srsLTE UEs to allocate",
-                   portal.ParameterType.INTEGER, 1, [1,2])
+                   portal.ParameterType.INTEGER, 3, [1,5])
 pc.defineParameter("enb_node", "eNodeB Node ID",
                    portal.ParameterType.STRING, "", advanced=True,
                    longDescription="Specific eNodeB node to bind to.")
@@ -177,6 +177,15 @@ enb1.addService(rspec.Execute(shell="bash", command="/local/repository/bin/tune-
 enb1.addService(rspec.Execute(shell="bash", command="/local/repository/bin/setup-ip-config.sh %s" % params.oranAddress))
 enb1.addService(rspec.Execute(shell="bash", command="/local/repository/bin/update-config-files.sh"))
 enb1.addService(rspec.Execute(shell="bash", command="/local/repository/bin/setup-srslte.sh"))
+enb2 = request.RawPC("enb2")
+enb2.component_id = params.enb_node
+enb2.hardware_type = GLOBALS.NUC_HWTYPE
+enb2.disk_image = GLOBALS.SRSLTE_IMG
+enb2.Desire("rf-controlled", 1)
+enb2.addService(rspec.Execute(shell="bash", command="/local/repository/bin/tune-cpu.sh"))
+enb2.addService(rspec.Execute(shell="bash", command="/local/repository/bin/setup-ip-config.sh %s" % params.oranAddress))
+enb2.addService(rspec.Execute(shell="bash", command="/local/repository/bin/update-config-files.sh"))
+enb2.addService(rspec.Execute(shell="bash", command="/local/repository/bin/setup-srslte.sh"))
 
 # Connect enb1 to shared vlan, if requested.
 if params.connectSharedVlan:
@@ -200,11 +209,16 @@ for i in range(1,params.num_ues+1):
     ue.addService(rspec.Execute(shell="bash", command="/local/repository/tune-cpu.sh"))
     ue.Desire("rf-controlled", 1)
     # Create the RF link between the UE and eNodeB
-    rflink = request.RFLink("rflink%d" % i)
+    rflink = request.RFLink("rflink1%d" % i)
     ue_enb1_rf = ue.addInterface("enb1_rf")
     enb1_ue_rf = enb1.addInterface("rue%d_rf" % i)
     rflink.addInterface(enb1_ue_rf)
     rflink.addInterface(ue_enb1_rf)
+    rflink = request.RFLink("rflink2%d" % i)
+    ue_enb2_rf = ue.addInterface("enb2_rf")
+    enb2_ue_rf = enb1.addInterface("rue%d_rf" % i)
+    rflink.addInterface(enb2_ue_rf)
+    rflink.addInterface(ue_enb2_rf)
 
 tour = IG.Tour()
 tour.Description(IG.Tour.MARKDOWN, tourDescription)
