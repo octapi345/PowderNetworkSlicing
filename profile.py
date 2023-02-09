@@ -217,7 +217,7 @@ for i in range(1,params.num_ues+1):
     rflink.addInterface(ue_enb1_rf)
     rflink = request.RFLink("rflink2%d" % i)
     ue_enb2_rf = ue.addInterface("enb2_rf")
-    enb2_ue_rf = enb1.addInterface("rue%d_rf" % i)
+    enb2_ue_rf = enb2.addInterface("rue%d_rf" % i)
     rflink.addInterface(enb2_ue_rf)
     rflink.addInterface(ue_enb2_rf)
 
