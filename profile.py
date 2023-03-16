@@ -42,7 +42,7 @@ pc.defineParameter("osImage", "Select OS image for clients",
                    portal.ParameterType.IMAGE,
                    imageList[0], imageList)
 
-pc.defineParameter("osServerImage", "Select OS image for server",
+pc.defineParameter("osServerImage", "Select OS image for nfs server",
                    portal.ParameterType.IMAGE,
                    imageList2[0], imageList2)
 
@@ -70,7 +70,13 @@ nfsBS.size = params.nfsSize
 # Initialization script for the server
 nfsServer.addService(pg.Execute(shell="sh", command="sudo /bin/bash /local/repository/nfs-server.sh"))
 
-# The NFS clients, also attached to the NFS lan.
+# The Email server.
+emailServer = request.RawPC("emailServer")
+emailServer.disk_image = params.osServerImage
+nfsLan.adInterface(emailServer.addInterface())
+#emailServer.addService(pg.Execute(shell="sh", command="sudo /bin/bash /local/repository/email-server.sh"))
+
+# The user nodes, also attached to the lan.
 for i in range(1, params.usrCount+1):
     node = request.RawPC("node%d" % i)
     node.disk_image = params.osImage
