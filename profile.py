@@ -74,7 +74,7 @@ nfsServer.addService(pg.Execute(shell="sh", command="sudo /bin/bash /local/repos
 emailServer = request.RawPC("emailServer")
 emailServer.disk_image = params.osServerImage
 nfsLan.addInterface(emailServer.addInterface())
-#emailServer.addService(pg.Execute(shell="sh", command="sudo /bin/bash /local/repository/email-server.sh"))
+emailServer.addService(pg.Execute(shell="sh", command="sudo /bin/bash /local/repository/email-server.sh"))
 
 # The user nodes, also attached to the lan.
 for i in range(1, params.usrCount+1):
