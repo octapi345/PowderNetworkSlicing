@@ -7,7 +7,7 @@ do
   touch $1-$i.txt
   echo "$text" >> $1-$i.txt
   sleep 0.5
-  cp $1-$i.txt /copy
+  cp $1-$i.txt /home/copy
   sleep 0.5
   let i++
 done
