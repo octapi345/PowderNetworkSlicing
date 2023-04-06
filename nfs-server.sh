@@ -152,3 +152,5 @@ fi
 
 # Give it time to start-up
 sleep 5
+apt-get install vnstat
+apt-get install monitorix
