@@ -94,7 +94,7 @@ else
 	sleep 2
     done
 fi
-mkdir /copy #for use in testing
+mkdir /home/copy #for use in testing
 echo ""
 echo "Mount of $NFSSERVER:$NFSDIR is ready."
 exit 0
