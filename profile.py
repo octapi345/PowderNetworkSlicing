@@ -42,7 +42,7 @@ pc.defineParameter("osImage", "Select OS image for clients",
                    portal.ParameterType.IMAGE,
                    imageList[0], imageList)
 
-pc.defineParameter("osServerImage", "Select OS image for nfs server",
+pc.defineParameter("osServerImage", "Select OS image for servers",
                    portal.ParameterType.IMAGE,
                    imageList2[0], imageList2)
 
