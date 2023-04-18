@@ -5,6 +5,11 @@ import geni.rspec.pg as pg
 # Import the Emulab specific extensions.
 import geni.rspec.emulab as emulab
 
+tourDescription = """
+3 server nodes each running a different service connected to user nodes over vlan
+
+"""
+
 # Create a portal context.
 pc = portal.Context()
 
