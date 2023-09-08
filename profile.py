@@ -68,7 +68,10 @@ nfsLan.link_multiplexing = True
 nfsServer = request.RawPC(nfsServerName)
 nfsServer.disk_image = params.osServerImage
 # Attach server to lan.
-nfsLan.addInterface(nfsServer.addInterface())
+ifaceNFS=nfsServer.addInterface("ifNFS")
+ifaceNFS.component_id = "ethNFS"
+ifaceNFS.addAddress(rspec.IPv4Address("192.168.1.25", "255.255.255.0"))
+nfsLan.addInterface(ifaceNFS)
 # Storage file system goes into a local (ephemeral) blockstore.
 nfsBS = nfsServer.Blockstore("nfsBS", nfsDirectory)
 nfsBS.size = params.nfsSize
@@ -78,20 +81,28 @@ nfsServer.addService(pg.Execute(shell="sh", command="sudo /bin/bash /local/repos
 # The Email server.
 emailServer = request.RawPC("emailServer")
 emailServer.disk_image = params.osServerImage
-nfsLan.addInterface(emailServer.addInterface())
+ifaceEM=emailServer.addInterface("ifEM")
+ifaceEM.component_id = "ethEM"
+ifaceEM.addAddress(rspec.IPv4Address("192.168.1.26", "255.255.255.0"))
+nfsLan.addInterface(ifaceEM)
 emailServer.addService(pg.Execute(shell="sh", command="sudo /bin/bash /local/repository/email-server.sh"))
 
 # The DNS server
 dnsServer = request.RawPC("dnsServer")
 dnsServer.disk_image = params.osServerImage
-nfsLan.addInterface(dnsServer.addInterface())
+ifaceDNS=dnsServer.addInterface("ifDNS")
+ifaceDNS.component_id = "ethDNS"
+ifaceDNS.addAddress(rspec.IPv4Address("192.168.1.27", "255.255.255.0"))
+nfsLan.addInterface(ifaceDNS)
 dnsServer.addService(pg.Execute(shell="sh", command="sudo bin/bash /local/repository/dns-server.sh"))
 
 # The user nodes, also attached to the lan.
 for i in range(1, params.usrCount+1):
     node = request.RawPC("node%d" % i)
     node.disk_image = params.osImage
-    nfsLan.addInterface(node.addInterface())
+    iface=node.addInterface("eth%d" % i)
+    iface.addAddress(rspec.IPv4Address("192.168.1.%d" % i, "255.255.255.0"))
+    nfsLan.addInterface(iface)
     # Initialization script for the clients
     node.addService(pg.Execute(shell="sh", command="sudo /bin/bash /local/repository/nfs-client.sh"))
     pass
