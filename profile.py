@@ -87,6 +87,13 @@ dnsServer.disk_image = params.osServerImage
 nfsLan.addInterface(dnsServer.addInterface())
 dnsServer.addService(pg.Execute(shell="sh", command="sudo bin/bash /local/repository/dns-server.sh"))
 
+""" Potential setup for MongoDB server 
+dbServer = request.RawPC("dbServer")
+dbServer.disk_image = params.osServerImage
+nfsLan.addInterface(dbServer.addInterface())
+dbServer.addService(pg.Execute(shell="sh", command="sudo bin/bash /local/repository/mongodb.sh")
+"""
+
 # The user nodes, also attached to the lan.
 for i in range(1, params.usrCount+1):
     node = request.RawPC("node%d" % i)
