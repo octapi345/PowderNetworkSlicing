@@ -1,4 +1,5 @@
 #!/bin/bash
+### Run this on the nfs node for deploying the mongo server
 sudo apt-get update
 sudo apt-get upgrade
 
