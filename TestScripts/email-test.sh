@@ -1,6 +1,7 @@
 trap "exit;" SIGINT
 i=1
-if [! -e /local/repository/send.txt]; then
+if ! [ -e /local/repository/send.txt]
+then
   touch /local/repository/send.txt
 fi
 while true
