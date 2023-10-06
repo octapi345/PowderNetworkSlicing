@@ -5,6 +5,12 @@ txt = f.read()
 f.close()
 edit = re.findall("m.*s", txt)
 times = []
+sum=0
 for x in range(len(edit)):
         times.append(float(edit[x].strip("ms")))
-print(times)
+
+for i in range(len(times)):
+        sum+=times[i]
+
+avg=sum/len(times)
+print(avg)
