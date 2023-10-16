@@ -5,7 +5,7 @@ client = MongoClient("mongodb://nfs.octapi-169709.networkslicing.emulab.net:2701
 db = client['testdb']
 collection = db['testcollec']
 
-with open("testdata.csv", "r") as csv_file:
+with open("../testdata.csv", "r") as csv_file:
     csv_reader = csv.DictReader(csv_file)
     
     for row in csv_reader:
