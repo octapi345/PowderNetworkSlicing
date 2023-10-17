@@ -11,7 +11,7 @@ for x in range(len(edit)):
         times.append(float(edit[x].strip("ms")))
 
 for i in range(len(times)):
-        transactNum++
+        transactNum+=1
         sum+=times[i]
 
 avg=sum/len(times)
