@@ -38,6 +38,7 @@ imageList2 = [
 nfsServerName = "nfs"
 nfsLanName    = "nfsLan"
 nfsDirectory  = "/nfs"
+hardware      = "d710"
 
 # Number of NFS clients (there is always a server)
 pc.defineParameter("usrCount", "Number of User nodes",
@@ -66,6 +67,7 @@ nfsLan.link_multiplexing = True
 
 # The NFS server.
 nfsServer = request.RawPC(nfsServerName)
+nfsServer.hardware_type = hardware
 nfsServer.disk_image = params.osServerImage
 # Attach server to lan.
 nfsLan.addInterface(nfsServer.addInterface())
@@ -77,18 +79,21 @@ nfsServer.addService(pg.Execute(shell="sh", command="sudo /bin/bash /local/repos
 
 # The Email server.
 emailServer = request.RawPC("emailServer")
+emailServer.hardware_type = hardware
 emailServer.disk_image = params.osServerImage
 nfsLan.addInterface(emailServer.addInterface())
 emailServer.addService(pg.Execute(shell="sh", command="sudo /bin/bash /local/repository/email-server.sh"))
 
 # The DNS server
 dnsServer = request.RawPC("dnsServer")
+dnsServer.hardware_type = hardware
 dnsServer.disk_image = params.osServerImage
 nfsLan.addInterface(dnsServer.addInterface())
 dnsServer.addService(pg.Execute(shell="sh", command="sudo bin/bash /local/repository/dns-server.sh"))
 
 """ Potential setup for MongoDB server 
 dbServer = request.RawPC("dbServer")
+dbServer.hardware_type = hardware
 dbServer.disk_image = params.osServerImage
 nfsLan.addInterface(dbServer.addInterface())
 dbServer.addService(pg.Execute(shell="sh", command="sudo bin/bash /local/repository/mongodb.sh")
@@ -97,6 +102,7 @@ dbServer.addService(pg.Execute(shell="sh", command="sudo bin/bash /local/reposit
 # The user nodes, also attached to the lan.
 for i in range(1, params.usrCount+1):
     node = request.RawPC("node%d" % i)
+    node.hardware_type = hardware
     node.disk_image = params.osImage
     nfsLan.addInterface(node.addInterface())
     # Initialization script for the clients
