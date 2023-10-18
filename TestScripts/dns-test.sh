@@ -6,7 +6,7 @@ do
     for c in {a..z}
     do
       echo "DNS lookup test"
-      ( time ( dig $1 $a$b.$c.com )) >> /local/repository/dnstimes.txt
+      ( time ( dig $1 $a$b.$c.com )) >> /local/repository/dnstimes.txt 2>&1
       sleep 0.5
     done
   done    
