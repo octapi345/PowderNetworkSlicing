@@ -6,7 +6,7 @@ do
     for c in {a..z}
     do
       echo "DNS lookup test"
-      dig @emailserver $a$b.$c.com
+      ( time ( dig $1 $a$b.$c.com )) >> /local/repository/dnstimes.txt
       sleep 0.5
     done
   done    
