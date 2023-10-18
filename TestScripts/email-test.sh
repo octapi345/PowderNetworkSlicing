@@ -1,6 +1,6 @@
 trap "exit;" SIGINT
 i=1
-if ! [ -e /local/repository/send.txt]
+if ! [ -e /local/repository/send.txt ]
 then
   touch /local/repository/send.txt
 fi
@@ -9,5 +9,5 @@ do
   echo "sending  email $i"
   (time (mail -s "test $i" $1 < /local/repository/TestScripts/email.txt)) >> /local/repository/send.txt 2>&1
   let i++;
-  sleep 0.05
+  sleep 0.5
 done
