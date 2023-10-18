@@ -70,7 +70,10 @@ nfsServer = request.RawPC(nfsServerName)
 nfsServer.hardware_type = hardware
 nfsServer.disk_image = params.osServerImage
 # Attach server to lan.
-nfsLan.addInterface(nfsServer.addInterface())
+ifaceNFS=nfsServer.addInterface("ifNFS")
+ifaceNFS.component_id = "ethNFS"
+ifaceNFS.addAddress(pg.IPv4Address("192.168.1.25", "255.255.255.0"))
+nfsLan.addInterface(ifaceNFS)
 # Storage file system goes into a local (ephemeral) blockstore.
 nfsBS = nfsServer.Blockstore("nfsBS", nfsDirectory)
 nfsBS.size = params.nfsSize
@@ -81,14 +84,20 @@ nfsServer.addService(pg.Execute(shell="sh", command="sudo /bin/bash /local/repos
 emailServer = request.RawPC("emailServer")
 emailServer.hardware_type = hardware
 emailServer.disk_image = params.osServerImage
-nfsLan.addInterface(emailServer.addInterface())
+ifaceEM=emailServer.addInterface("ifEM")
+ifaceEM.component_id = "ethEM"
+ifaceEM.addAddress(pg.IPv4Address("192.168.1.26", "255.255.255.0"))
+nfsLan.addInterface(ifaceEM)
 emailServer.addService(pg.Execute(shell="sh", command="sudo /bin/bash /local/repository/email-server.sh"))
 
 # The DNS server
 dnsServer = request.RawPC("dnsServer")
 dnsServer.hardware_type = hardware
 dnsServer.disk_image = params.osServerImage
-nfsLan.addInterface(dnsServer.addInterface())
+ifaceDNS=dnsServer.addInterface("ifDNS")
+ifaceDNS.component_id = "ethDNS"
+ifaceDNS.addAddress(pg.IPv4Address("192.168.1.27", "255.255.255.0"))
+nfsLan.addInterface(ifaceDNS)
 dnsServer.addService(pg.Execute(shell="sh", command="sudo bin/bash /local/repository/dns-server.sh"))
 
 """ Potential setup for MongoDB server 
@@ -104,7 +113,9 @@ for i in range(1, params.usrCount+1):
     node = request.RawPC("node%d" % i)
     node.hardware_type = hardware
     node.disk_image = params.osImage
-    nfsLan.addInterface(node.addInterface())
+    iface=node.addInterface("eth%d" % i)
+    iface.addAddress(pg.IPv4Address("192.168.1.%d" % i, "255.255.255.0"))
+    nfsLan.addInterface(iface)
     # Initialization script for the clients
     node.addService(pg.Execute(shell="sh", command="sudo /bin/bash /local/repository/nfs-client.sh"))
     pass
