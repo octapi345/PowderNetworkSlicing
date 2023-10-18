@@ -1,6 +1,6 @@
 #!/bin/bash
 i=1
-if [! -e /local/repository/TestScripts/send.txt]; then
+if [ ! -e /local/repository/TestScripts/send.txt ]; then
   touch /local/repository/TestScripts/send.txt
 fi
 
