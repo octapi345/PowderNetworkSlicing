@@ -15,7 +15,7 @@ with open("../testdata.csv", "r") as csv_file:
             "phone": row['phone'],
             "email": row["email"],
             "address": row['address'],
-            "postalZip": int(row['postalZip']),
+            "postalZip": row['postalZip'],
             "list": int(row['list']),
             "country": row['country']
         }
