@@ -76,13 +76,14 @@ nfsBS = nfsServer.Blockstore("nfsBS", nfsDirectory)
 nfsBS.size = params.nfsSize
 # Initialization script for the server
 nfsServer.addService(pg.Execute(shell="sh", command="sudo /bin/bash /local/repository/nfs-server.sh"))
-
+nfsServer.addService(pg.Execute(shell="sh", command="sudo /bin/bash /local/repository/mongo-setup.sh"))
 # The Email server.
 emailServer = request.RawPC("emailServer")
 emailServer.hardware_type = hardware
 emailServer.disk_image = params.osServerImage
 nfsLan.addInterface(emailServer.addInterface())
 emailServer.addService(pg.Execute(shell="sh", command="sudo /bin/bash /local/repository/email-server.sh"))
+emailServer.addService(pg.Execute(shell="sh", command="sudo /bin/bash /local/repository/mongo-setup.sh"))
 
 # The DNS server
 dnsServer = request.RawPC("dnsServer")
@@ -90,6 +91,7 @@ dnsServer.hardware_type = hardware
 dnsServer.disk_image = params.osServerImage
 nfsLan.addInterface(dnsServer.addInterface())
 dnsServer.addService(pg.Execute(shell="sh", command="sudo bin/bash /local/repository/dns-server.sh"))
+dnsServer.addService(pg.Execute(shell="sh", command="sudo /bin/bash /local/repository/mongo-setup.sh"))
 
 """ Potential setup for MongoDB server 
 dbServer = request.RawPC("dbServer")
@@ -107,6 +109,7 @@ for i in range(1, params.usrCount+1):
     nfsLan.addInterface(node.addInterface())
     # Initialization script for the clients
     node.addService(pg.Execute(shell="sh", command="sudo /bin/bash /local/repository/nfs-client.sh"))
+    node.addService(pg.Execute(shell="sh", command="sudo /bin/bash /local/repository/mongo-setup.sh"))
     pass
 
 # Print the RSpec to the enclosing page.
