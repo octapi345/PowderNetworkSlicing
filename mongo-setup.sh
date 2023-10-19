@@ -20,4 +20,4 @@ sudo apt-get install -y mongodb-mongosh
 sudo systemctl enable mongodb
 sudo systemctl start mongodb
 sudo apt install -y python3-pip
-pip install -y pymongo
+python -m pip install pymongo
