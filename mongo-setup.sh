@@ -1,7 +1,7 @@
 #!/bin/bash
 sudo apt-get update
 sudo apt-get upgrade -y
-### This is the script for installing the mongodb service
+### This is the script for installing the mongodb and tshark services
 ### Mongodb Install
 curl -fsSL https://pgp.mongodb.com/server-7.0.asc | \
    sudo gpg -o /usr/share/keyrings/mongodb-server-7.0.gpg \
@@ -17,7 +17,12 @@ echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb
 sudo apt-get update
 sudo apt-get install -y mongodb-mongosh
 
-sudo systemctl enable mongodb
-sudo systemctl start mongodb
+### Install tshark (Wireshark)
+sudo apt-get install -y tshark
+### Install python
 sudo apt install -y python3-pip
 python -m pip install pymongo
+
+
+sudo systemctl enable mongodb
+sudo systemctl start mongodb
