@@ -1,11 +1,14 @@
 from pymongo import MongoClient
 import csv
-client = MongoClient("mongodb://nfs.octapi-169709.networkslicing.emulab.net:27017")
+import sys
+
+mongo_host = sys.argv[1]
+client = MongoClient("mongodb://{mongo_host}:27017")
 
 db = client['testdb']
 collection = db['testcollec']
 
-with open("../testdata.csv", "r") as csv_file:
+with open("/local/repository/testdata.csv", "r") as csv_file:
     csv_reader = csv.DictReader(csv_file)
     
     for row in csv_reader:
