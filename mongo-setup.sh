@@ -18,7 +18,7 @@ sudo apt-get update
 sudo apt-get install -y mongodb-mongosh
 
 ### Install tshark (Wireshark)
-sudo apt-get install -y tshark
+#sudo apt-get install -y tshark
 ### Install python
 sudo apt install -y python3-pip
 python -m pip install pymongo
