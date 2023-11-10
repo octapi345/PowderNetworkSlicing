@@ -2,8 +2,8 @@ from pymongo import MongoClient
 import csv
 import sys
 
-mongo_host = sys.argv[1]
-client = MongoClient("mongodb://{mongo_host}:27017")
+ongo_host = sys.argv[1]
+client = MongoClient(f"mongodb://{mongo_host}:27017")
 
 db = client['testdb']
 collection = db['testcollec']
