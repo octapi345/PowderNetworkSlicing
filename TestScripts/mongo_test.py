@@ -1,3 +1,8 @@
+from pymongo import MongoClient
+import csv
+import sys
+import time
+
 for i in range(100000):
     start=time.time()
     mongo_host = sys.argv[1]
