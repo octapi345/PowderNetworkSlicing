@@ -1,3 +1,4 @@
+trap "exit;" SIGINT
 #!/bin/bash
 
 # Path to your Python script
