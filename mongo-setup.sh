@@ -10,6 +10,7 @@ echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-7.0.gp
 sudo apt-get install -y mongodb
 
 sudo cp -v /local/repository/dbconfig.txt /etc/mongodb.conf
+sudo systemctl restart mongodb
 
 ### Mongosh Install
 wget -qO- https://www.mongodb.org/static/pgp/server-7.0.asc | sudo tee /etc/apt/trusted.gpg.d/server-7.0.asc
