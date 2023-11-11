@@ -1,9 +1,11 @@
 import re
+import sys
 
-f = open("test.txt", "r")
+fname = sys.argv[1]
+f = open(f"{fname}", "r")
 txt = f.read()
 f.close()
-edit = re.findall("m.*s", txt)
+edit = re.findall(".*s", txt)
 times = []
 sum=0
 transactNum=0
