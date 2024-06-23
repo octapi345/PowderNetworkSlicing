@@ -1,4 +1,4 @@
-define($IFACENAME br-flat-lan-1);
+define($IFACENAME ens3);
 
 FromDevice($IFACENAME)
 	-> mem :: ApplyPressure
