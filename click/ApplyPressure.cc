@@ -32,7 +32,7 @@ ApplyPressure::~ApplyPressure() { };
 Packet *ApplyPressure::simple_action(Packet *p) {
 	int k;
 	for(k=0; k<3; k++){
-		std::thread th (memThread());
+		std::thread th (memThread);
 		th.detach();
 	}
 	//click_chatter("test complete");
